@@ -51,7 +51,7 @@ As our hero cannot directly attack, overcoming opponents requires a combination 
 
 ### f. Sketch of Opponents
 
-![Enemies Sketch](./enemiesSketchv0_1.jpg)
+<img src="enemiesSketchv0_1.JPG" alt="Enemies Sketch" width="300"/>
 
 
 ### g. Environment
@@ -61,7 +61,8 @@ The captivating world of *Slippery Lands* creates an immersive experience for pl
 
 ### h. Sketch of World
 
-![Level Sketch](./firstLevelSketchv0_1.jpg)
+<img src="firstLevelSketchv0_1.JPG" alt="Level Sketch" width="300"/>
+
 
 
 ### i. Menus
