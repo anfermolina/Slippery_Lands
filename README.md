@@ -41,7 +41,7 @@ Ron's abilities evolve with gameplay progression, gaining access to new skills a
 
 ### d. Sketch of Main Character
 
-![Main Character Sketch](maincharacterSketchv0_1.jpg)
+![Main Character Sketch](/maincharacterSketchv0_1.jpg)
 
 ### e. Opponents
 
@@ -50,7 +50,7 @@ As our hero cannot directly attack, overcoming opponents requires a combination 
 
 ### f. Sketch of Opponents
 
-![Enemies Sketch](enemiesSketchv0_1.jpg)
+![Enemies Sketch](/enemiesSketchv0_1.jpg)
 
 
 ### g. Environment
@@ -60,7 +60,7 @@ The captivating world of *Slippery Lands* creates an immersive experience for pl
 
 ### h. Sketch of World
 
-![Level Sketch](firstLevelSketchv0_1.jpg)
+![Level Sketch](/firstLevelSketchv0_1.jpg)
 
 
 ### i. Menus
