@@ -41,7 +41,8 @@ Ron's abilities evolve with gameplay progression, gaining access to new skills a
 
 ### d. Sketch of Main Character
 
-![Main Character Sketch](maincharacterSketchv0_1.JPG)
+<img src="maincharacterSketchv0_1.JPG" alt="Main Character Sketch" width="300"/>
+
 
 ### e. Opponents
 
