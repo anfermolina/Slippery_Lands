@@ -22,14 +22,15 @@
 //  sfml.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
-#include <iomanip>
 
+#include <iostream>
 #include "GameEngine.h"
+
+
 
 int main()
 {
-	GameEngine game("../assets.txt");
-	game.run();
-
+    GameEngine game("../config.txt");
+    game.run();
+    return 0;
 }

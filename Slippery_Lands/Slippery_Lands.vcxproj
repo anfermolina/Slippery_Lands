@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>%SFML_DIR%\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>%SFML_DIR%\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,11 +141,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="MusicPlayer.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scene_Ice.cpp" />
+    <ClCompile Include="Scene_Menu.cpp" />
     <ClCompile Include="Slippery_Lands.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="Assets.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="MusicPlayer.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Scene_Ice.h" />
+    <ClInclude Include="Scene_Menu.h" />
+    <ClInclude Include="SoundPlayer.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
