@@ -23,7 +23,6 @@
 //
 
 #include <iostream>
-#include <SFML/Graphics.hpp>
 #include <iomanip>
 
 #include "GameEngine.h"
