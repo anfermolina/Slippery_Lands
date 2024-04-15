@@ -1,0 +1,47 @@
+# GameEngine Config
+
+Window  720 648
+
+Font    Arial           ../assets/fonts/arial.ttf
+Font    main            ../assets/fonts/Sansation.ttf
+Font    Arcade          ../assets/fonts/arcadeclassic.regular.ttf
+
+Music gameMusic      ../assets/Music/IceCave.flac
+
+# Textures
+Texture Player		../assets/Textures/froggerAtlas.png
+Texture Ice1 		../assets/Textures/ice/ice1.png
+Texture Ice2 		../assets/Textures/ice/ice2.png
+Texture Ice3 		../assets/Textures/ice/ice3.png
+Texture Ice4 		../assets/Textures/ice/ice4.png
+Texture Ice5 		../assets/Textures/ice/ice5.png
+Texture Rock		../assets/Textures/ice/rock.png
+Texture Snow 		../assets/Textures/ice/snow.png
+Texture Tree 		../assets/Textures/ice/tree.png
+Texture Box 		../assets/Textures/box.png
+Texture Swch 		../assets/Textures/switch.png
+Texture SwPrsd 		../assets/Textures/switch_pressed.png
+Texture Wall 		../assets/Textures/walls/wall.png
+Texture Door 		../assets/Textures/walls/door.png
+Texture DoorOp 		../assets/Textures/walls/door_open.png
+
+# Sprites
+Sprite Background       Background   0 0  480 600
+Sprite Title            Title 0 0 480 600
+
+# SOUNDS
+Sound Step1             ../assets/Sound/snow_step_dry-01.flac
+Sound Step2             ../assets/Sound/snow_step_dry-02.flac
+Sound Step3             ../assets/Sound/snow_step_dry-03.flac
+Sound Step4             ../assets/Sound/snow_step_dry-04.flac
+
+JSON                    ../assets/Textures/froggerAtlas.json
+
+
+#
+#  Animation    Name            Texture     Speed   Repeats
+Animation       up              Player	    8        no
+Animation       down            Player	    8        no
+Animation       left            Player	    8        no
+Animation       right           Player	    8        no
+Animation       die             Player	    8        no
