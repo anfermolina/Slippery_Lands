@@ -13,11 +13,13 @@
 
 
 
+
 class Scene_Ice : public Scene {
 private:
     sPtrEntt        m_player{ nullptr };
     sf::View        m_worldView;
     sf::FloatRect   m_worldBounds;
+    sf::Time        m_remainingTime;
 
     bool			m_drawTextures{ true };
     bool			m_drawAABB{ false };
@@ -52,6 +54,8 @@ private:
     void            loadLevel(const std::string& path);
     sf::FloatRect   getViewBounds();
 
+
+
 public:
 
     Scene_Ice(GameEngine* gameEngine, const std::string& levelPath);
@@ -59,6 +63,7 @@ public:
     void		  update(sf::Time dt) override;
     void		  sDoAction(const Command& command) override;
     void		  sRender() override;
+  
 
 };
 

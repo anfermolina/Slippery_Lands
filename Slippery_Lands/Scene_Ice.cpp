@@ -19,9 +19,11 @@ namespace {
 }
 
 
-Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string&levelPath)
+Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string& levelPath)
     : Scene(gameEngine)
-      , m_worldView(gameEngine->window().getDefaultView()) {
+    , m_worldView(gameEngine->window().getDefaultView())
+    , m_remainingTime(sf::seconds(120.f))
+{
     loadLevel(levelPath);
     registerActions();
 
@@ -36,18 +38,18 @@ Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string&levelPath)
 }
 
 
-void Scene_Ice::init(const std::string&path) {
+void Scene_Ice::init(const std::string& path) {
 }
 
 void Scene_Ice::sMovement(sf::Time dt) {
     playerMovement();
 
     // move all objects
-    for (auto e: m_entityManager.getEntities()) {
+    for (auto e : m_entityManager.getEntities()) {
         if (e->hasComponent<CInput>())
             continue; // player is moved in playerMovement
         if (e->hasComponent<CTransform>()) {
-            auto&tfm = e->getComponent<CTransform>();
+            auto& tfm = e->getComponent<CTransform>();
 
             tfm.pos += tfm.vel * dt.asSeconds();
             tfm.angle += tfm.angVel * dt.asSeconds();
@@ -95,8 +97,8 @@ void Scene_Ice::playerMovement() {
         }
     }
 
-    auto&dir = m_player->getComponent<CInput>().dir;
-    auto&pos = m_player->getComponent<CTransform>().pos;
+    auto& dir = m_player->getComponent<CInput>().dir;
+    auto& pos = m_player->getComponent<CTransform>().pos;
 
     std::string stepSndRandom = std::to_string(dist6(rng));
 
@@ -134,7 +136,6 @@ void Scene_Ice::playerMovement() {
         }
         else pos.x += 2.f;
     }
-
     if (overSnow) dir = 0;
 }
 
@@ -152,37 +153,55 @@ void Scene_Ice::sRender() {
     static const sf::Color backgroundColor(100, 100, 255);
     m_game->window().clear(backgroundColor);
 
+    // First Background (Ice, walls and door)
     for (auto& e : m_entityManager.getEntities()) {
-        if (e->hasComponent<CSprite>()) {
-            // Draw Sprites
-            auto& sprt = e->getComponent<CSprite>().sprite;
-            auto& tfm = e->getComponent<CTransform>();
-            sprt.setPosition(tfm.pos.x, tfm.pos.y);
-            sprt.setRotation(tfm.angle);
-            m_game->window().draw(sprt);
+        if (e->getTag() == "Ice1" || e->getTag() == "Ice2" || e->getTag() == "Ice3" || e->getTag() == "Ice4" || e->getTag() == "Ice5"
+            || e->getTag() == "Wall" || e->getTag() == "Door" || e->getTag() == "DoorOp") {
+            if (e->hasComponent<CSprite>()) {
+                // Draw Sprites
+                auto& sprt = e->getComponent<CSprite>().sprite;
+                auto& tfm = e->getComponent<CTransform>();
+                sprt.setPosition(tfm.pos.x, tfm.pos.y);
+                sprt.setRotation(tfm.angle);
+                m_game->window().draw(sprt);
+            }
         }
+    }
 
+    // Then the rest (Player, trees, box, etc)
+    for (auto& e : m_entityManager.getEntities()) {
+        if (e->getTag() != "Ice1" && e->getTag() != "Ice2" && e->getTag() != "Ice3" && e->getTag() != "Ice4" && e->getTag() != "Ice5"
+            && e->getTag() != "Wall" && e->getTag() != "Door" && e->getTag() != "DoorOp") {
+            if (e->hasComponent<CSprite>()) {
+                // Draw Sprites
+                auto& sprt = e->getComponent<CSprite>().sprite;
+                auto& tfm = e->getComponent<CTransform>();
+                sprt.setPosition(tfm.pos.x, tfm.pos.y);
+                sprt.setRotation(tfm.angle);
+                m_game->window().draw(sprt);
+            }
 
-        if (e->hasComponent<CAnimation>()) {
+            if (e->hasComponent<CAnimation>()) {
 
-            // Draw Animation
-            auto& anim = e->getComponent<CAnimation>().animation;
-            auto& tfm = e->getComponent<CTransform>();
-            anim.getSprite().setPosition(tfm.pos);
-            anim.getSprite().setRotation(tfm.angle);
-            m_game->window().draw(anim.getSprite());
+                // Draw Animation
+                auto& anim = e->getComponent<CAnimation>().animation;
+                auto& tfm = e->getComponent<CTransform>();
+                anim.getSprite().setPosition(tfm.pos);
+                anim.getSprite().setRotation(tfm.angle);
+                m_game->window().draw(anim.getSprite());
 
-            if (m_drawAABB) {
-                if (e->hasComponent<CBoundingBox>()) {
-                    auto box = e->getComponent<CBoundingBox>();
-                    sf::RectangleShape rect;
-                    rect.setSize(sf::Vector2f{ box.size.x, box.size.y });
-                    centerOrigin(rect);
-                    rect.setPosition(e->getComponent<CTransform>().pos);
-                    rect.setFillColor(sf::Color(0, 0, 0, 0));
-                    rect.setOutlineColor(sf::Color{ 0, 255, 0 });
-                    rect.setOutlineThickness(2.f);
-                    m_game->window().draw(rect);
+                if (m_drawAABB) {
+                    if (e->hasComponent<CBoundingBox>()) {
+                        auto box = e->getComponent<CBoundingBox>();
+                        sf::RectangleShape rect;
+                        rect.setSize(sf::Vector2f{ box.size.x, box.size.y });
+                        centerOrigin(rect);
+                        rect.setPosition(e->getComponent<CTransform>().pos);
+                        rect.setFillColor(sf::Color(0, 0, 0, 0));
+                        rect.setOutlineColor(sf::Color{ 0, 255, 0 });
+                        rect.setOutlineThickness(2.f);
+                        m_game->window().draw(rect);
+                    }
                 }
             }
         }
@@ -221,6 +240,22 @@ void Scene_Ice::sRender() {
             }
         }
     }
+
+    // Draw timer text
+    sf::Text timerText;
+    timerText.setFont(Assets::getInstance().getFont("Arial"));
+    timerText.setCharacterSize(24);
+    timerText.setFillColor(sf::Color::White);
+    timerText.setPosition(10.f, 10.f); // Position the text in the top-left corner
+
+    // Format remaining time as MM:SS
+    int remainingSeconds = static_cast<int>(m_remainingTime.asSeconds());
+    int minutes = remainingSeconds / 60;
+    int seconds = remainingSeconds % 60;
+    std::string timerString = std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+
+    timerText.setString("Time: " + timerString);
+    m_game->window().draw(timerText);
 }
 
 
@@ -228,7 +263,7 @@ void Scene_Ice::update(sf::Time dt) {
     sUpdate(dt);
 }
 
-void Scene_Ice::sDoAction(const Command&action) {
+void Scene_Ice::sDoAction(const Command& action) {
     // On Key Press
     if (action.type() == "START") {
         if (action.name() == "PAUSE") { setPaused(!m_isPaused); }
@@ -238,6 +273,19 @@ void Scene_Ice::sDoAction(const Command&action) {
         else if (action.name() == "TOGGLE_TEXTURE") { m_drawTextures = !m_drawTextures; }
         else if (action.name() == "TOGGLE_COLLISION") { m_drawAABB = !m_drawAABB; }
         else if (action.name() == "TOGGLE_GRID") { m_drawGrid = !m_drawGrid; }
+
+        bool overSnow = false;
+        for (auto e : m_entityManager.getEntities()) {
+            sf::Vector2f overlap = Physics::getOverlap(m_player, e);
+            bool thereIsCollision = overlap.x > 0.f && overlap.y > 0.f;
+
+            if (thereIsCollision && e->getTag() == "Snow") {
+                overSnow = true;
+                break;
+            }
+        }
+
+        auto& input = m_player->getComponent<CInput>();
 
         // Player control
         if (m_player->getComponent<CInput>().dir == 0) { // only move if it's still
@@ -273,8 +321,9 @@ void Scene_Ice::sCollisions() {
         sf::Vector2f overlap = Physics::getOverlap(m_player, e);
         bool thereIsCollision = overlap.x > 0.f && overlap.y > 0.f;
 
+        // Player with Tile
         if (thereIsCollision) {
-            if (e->getTag() == "Rock" || e->getTag() == "Tree" || e->getTag() == "Wall" || e->getTag() == "Limit") {
+            if (e->getTag() == "Rock" || e->getTag() == "Tree" || e->getTag() == "Wall" || e->getTag() == "Limit" || e->getTag() == "Door") {
                 m_player->getComponent<CInput>().dir = 0;
                 if (overlap.x < overlap.y) { // only compensate on the shorter axis
                     if (transf.pos.x < tile_transf.pos.x)
@@ -301,26 +350,26 @@ void Scene_Ice::sCollisions() {
                 }
             }
         }
-        // STOP BOX 
+        // Box collision
         if (e->getTag() == "Box") {
             for (auto e2 : m_entityManager.getEntities()) {
-                auto& e2_transf = e->getComponent<CTransform>();
-                sf::Vector2f overlap2 = Physics::getOverlap(e, e2);
-                bool thereIsCollision = overlap2.x > 0.f && overlap2.y > 0.f;
+                auto& e2_transf = e2->getComponent<CTransform>();
+                overlap = Physics::getOverlap(e, e2);
+                thereIsCollision = overlap.x > 0.f && overlap.y > 0.f;
 
                 if (thereIsCollision) {
-                    if (e2->getTag() == "Rock" || e2->getTag() == "Tree" || e2->getTag() == "Wall" || e2->getTag() == "Door") {
+                    if (e2->getTag() == "Rock" || e2->getTag() == "Tree" || e2->getTag() == "Snow" || e2->getTag() == "Wall" || e2->getTag() == "Limit") {
                         m_player->getComponent<CInput>().dir = 0;
-                        if (overlap2.x < overlap2.y) { // only compensate on the shorter axis
+                        if (overlap.x < overlap.y) { // only compensate on the shorter axis
                             if (tile_transf.pos.x < e2_transf.pos.x)
-                                tile_transf.pos.x -= overlap2.x;
-                            else tile_transf.pos.x += overlap2.x;
+                                tile_transf.pos.x -= overlap.x;
+                            else tile_transf.pos.x += overlap.x;
                         }
                         else {
                             if (tile_transf.pos.y < e2_transf.pos.y)  // bottom
-                                tile_transf.pos.y -= overlap2.y;
+                                tile_transf.pos.y -= overlap.y;
                             else // top
-                                tile_transf.pos.y += overlap2.y;
+                                tile_transf.pos.y += overlap.y;
                         }
                     }
                     else if (e2->getTag() == "Swch") {
@@ -345,6 +394,12 @@ void Scene_Ice::sUpdate(sf::Time dt) {
     SoundPlayer::getInstance().removeStoppedSounds();
     m_entityManager.update();
 
+    m_remainingTime -= dt;
+
+    if (m_remainingTime <= sf::Time::Zero) {
+        m_game->quitLevel();
+    }
+
     if (m_isPaused)
         return;
 
@@ -356,10 +411,10 @@ void Scene_Ice::sUpdate(sf::Time dt) {
 
 void Scene_Ice::sAnimation(sf::Time dt) {
     auto list = m_entityManager.getEntities();
-    for (auto e: m_entityManager.getEntities()) {
+    for (auto e : m_entityManager.getEntities()) {
         // update all animations
         if (e->hasComponent<CAnimation>()) {
-            auto&anim = e->getComponent<CAnimation>();
+            auto& anim = e->getComponent<CAnimation>();
             anim.animation.update(dt);
             // do nothing if animation has ended
         }
@@ -370,7 +425,7 @@ void Scene_Ice::sAnimation(sf::Time dt) {
 void Scene_Ice::checkPlayerState() {
 }
 
-void Scene_Ice::loadLevel(const std::string&path) {
+void Scene_Ice::loadLevel(const std::string& path) {
     std::ifstream config(path);
     if (config.fail()) {
         std::cerr << "Open file " << path << " failed\n";
@@ -378,7 +433,7 @@ void Scene_Ice::loadLevel(const std::string&path) {
         exit(1);
     }
 
-    std::string token{""};
+    std::string token{ "" };
     config >> token;
     while (!config.eof()) {
         if (token == "Bkg") {
@@ -390,7 +445,7 @@ void Scene_Ice::loadLevel(const std::string&path) {
             // for background, no textureRect its just the whole texture
             // and no center origin, position by top left corner
             // stationary so no CTransfrom required.
-            auto&sprite = e->addComponent<CSprite>(Assets::getInstance().getTexture(name)).sprite;
+            auto& sprite = e->addComponent<CSprite>(Assets::getInstance().getTexture(name)).sprite;
             sprite.setOrigin(0.f, 0.f);
             sprite.setPosition(pos);
         }
