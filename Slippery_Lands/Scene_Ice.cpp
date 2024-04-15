@@ -19,9 +19,9 @@ namespace {
 }
 
 
-Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string& levelPath)
+Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string&levelPath)
     : Scene(gameEngine)
-    , m_worldView(gameEngine->window().getDefaultView()) {
+      , m_worldView(gameEngine->window().getDefaultView()) {
     loadLevel(levelPath);
     registerActions();
 
@@ -36,18 +36,18 @@ Scene_Ice::Scene_Ice(GameEngine* gameEngine, const std::string& levelPath)
 }
 
 
-void Scene_Ice::init(const std::string& path) {
+void Scene_Ice::init(const std::string&path) {
 }
 
 void Scene_Ice::sMovement(sf::Time dt) {
     playerMovement();
 
     // move all objects
-    for (auto e : m_entityManager.getEntities()) {
+    for (auto e: m_entityManager.getEntities()) {
         if (e->hasComponent<CInput>())
             continue; // player is moved in playerMovement
         if (e->hasComponent<CTransform>()) {
-            auto& tfm = e->getComponent<CTransform>();
+            auto&tfm = e->getComponent<CTransform>();
 
             tfm.pos += tfm.vel * dt.asSeconds();
             tfm.angle += tfm.angVel * dt.asSeconds();
@@ -71,7 +71,7 @@ void Scene_Ice::registerActions() {
     registerAction(sf::Keyboard::S, "DOWN");
     registerAction(sf::Keyboard::Down, "DOWN");
 
-    registerAction(sf::Keyboard::G, "ACTION");
+    registerAction(sf::Keyboard::G, "TOGGLE_GRID");
 }
 
 
@@ -95,8 +95,8 @@ void Scene_Ice::playerMovement() {
         }
     }
 
-    auto& dir = m_player->getComponent<CInput>().dir;
-    auto& pos = m_player->getComponent<CTransform>().pos;
+    auto&dir = m_player->getComponent<CInput>().dir;
+    auto&pos = m_player->getComponent<CTransform>().pos;
 
     std::string stepSndRandom = std::to_string(dist6(rng));
 
@@ -187,6 +187,40 @@ void Scene_Ice::sRender() {
             }
         }
     }
+
+    sf::Text gridText;
+    gridText.setFont(Assets::getInstance().getFont("Arial"));
+    gridText.setCharacterSize(10);
+    int margin = 36;
+    if (m_drawGrid) {
+        for (auto e : m_entityManager.getEntities()) {
+            if (e->getComponent<CSprite>().has) {
+                auto pos = e->getComponent<CTransform>().pos;
+                pos.x -= margin;
+                pos.y -= margin;
+
+                sf::Vertex line[] =
+                {
+                    sf::Vertex(sf::Vector2f(pos.x, pos.y)),
+                    sf::Vertex(sf::Vector2f(pos.x + 72.f, pos.y))
+                };
+                m_game->window().draw(line, 2, sf::Lines);
+
+                sf::Vertex line2[] =
+                {
+                    sf::Vertex(sf::Vector2f(pos.x, pos.y)),
+                    sf::Vertex(sf::Vector2f(pos.x, pos.y + 72.f))
+                };
+                m_game->window().draw(line2, 2, sf::Lines);
+
+                std::string text = "(" + std::to_string((int)(pos.x / 72.f)) + "," + std::to_string((int)(pos.y / 72.f)) + ")";
+
+                gridText.setString(text);
+                gridText.setPosition(pos);
+                m_game->window().draw(gridText);
+            }
+        }
+    }
 }
 
 
@@ -194,7 +228,7 @@ void Scene_Ice::update(sf::Time dt) {
     sUpdate(dt);
 }
 
-void Scene_Ice::sDoAction(const Command& action) {
+void Scene_Ice::sDoAction(const Command&action) {
     // On Key Press
     if (action.type() == "START") {
         if (action.name() == "PAUSE") { setPaused(!m_isPaused); }
@@ -322,10 +356,10 @@ void Scene_Ice::sUpdate(sf::Time dt) {
 
 void Scene_Ice::sAnimation(sf::Time dt) {
     auto list = m_entityManager.getEntities();
-    for (auto e : m_entityManager.getEntities()) {
+    for (auto e: m_entityManager.getEntities()) {
         // update all animations
         if (e->hasComponent<CAnimation>()) {
-            auto& anim = e->getComponent<CAnimation>();
+            auto&anim = e->getComponent<CAnimation>();
             anim.animation.update(dt);
             // do nothing if animation has ended
         }
@@ -336,7 +370,7 @@ void Scene_Ice::sAnimation(sf::Time dt) {
 void Scene_Ice::checkPlayerState() {
 }
 
-void Scene_Ice::loadLevel(const std::string& path) {
+void Scene_Ice::loadLevel(const std::string&path) {
     std::ifstream config(path);
     if (config.fail()) {
         std::cerr << "Open file " << path << " failed\n";
@@ -344,7 +378,7 @@ void Scene_Ice::loadLevel(const std::string& path) {
         exit(1);
     }
 
-    std::string token{ "" };
+    std::string token{""};
     config >> token;
     while (!config.eof()) {
         if (token == "Bkg") {
@@ -356,7 +390,7 @@ void Scene_Ice::loadLevel(const std::string& path) {
             // for background, no textureRect its just the whole texture
             // and no center origin, position by top left corner
             // stationary so no CTransfrom required.
-            auto& sprite = e->addComponent<CSprite>(Assets::getInstance().getTexture(name)).sprite;
+            auto&sprite = e->addComponent<CSprite>(Assets::getInstance().getTexture(name)).sprite;
             sprite.setOrigin(0.f, 0.f);
             sprite.setPosition(pos);
         }
