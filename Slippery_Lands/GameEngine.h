@@ -20,30 +20,30 @@ public:
 	size_t				        m_simulationSpeed{ 1 };
 	bool				        m_running{ true };
 
-	void						loadConfigFromFile(const std::string &path, unsigned int &width, unsigned int &height) const;
+	void						loadConfigFromFile(const std::string& path, unsigned int& width, unsigned int& height) const;
 	void						init(const std::string& path);
 	void						sUserInput();
 	std::shared_ptr<Scene>		currentScene();
 
 	// stats
 	sf::Text					m_statisticsText;
-	sf::Time					m_statisticsUpdateTime{sf::Time::Zero};
-	unsigned int				m_statisticsNumFrames{0};
+	sf::Time					m_statisticsUpdateTime{ sf::Time::Zero };
+	unsigned int				m_statisticsNumFrames{ 0 };
 
 public:
 
 	GameEngine(const std::string& path);
 
 	void changeScene(const std::string& sceneName,
-                     std::shared_ptr<Scene> scene,
-                     bool endCurrentScene = false);
+		std::shared_ptr<Scene> scene,
+		bool endCurrentScene = false);
 
 	void				quit();
 	void				run();
 	void				quitLevel();
 	void				backLevel();
 
-	sf::RenderWindow&	window();
+	sf::RenderWindow& window();
 
 	sf::Vector2f		windowSize() const;
 	bool				isRunning();
